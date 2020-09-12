@@ -51,12 +51,14 @@ class InvoiceDetails(APIView):
 
 
 class InvoiceItemDetails(APIView):
+    
     def get_object(self, id):
         try:
             return InvoiceItem.objects.filter(invoice = id)
 
         except InvoiceItem.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
+
 
     def get(self, request, id):
 
@@ -94,6 +96,9 @@ class PaymentDetails(APIView):
 
         except Payment.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
+        
+    # def get_invoice_object(self, id):
+    #     return Invoice.objects.get(id=id)
 
     def get(self, request, id):
 
@@ -103,9 +108,13 @@ class PaymentDetails(APIView):
 
     
     def post(self, request, id):
+        # invoice = self.get_invoice_object(id)
+        # invoice_serializer = InvoiceSerializer(invoice)
         serializer = PaymentSerializer(data=request.data)
-        if serializer.is_valid():
+        if serializer.is_valid() :
+        # and invoice_serializer.is_valid():
             serializer.save()
+            # invoice_serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_404_BAD_REQUEST)
 
