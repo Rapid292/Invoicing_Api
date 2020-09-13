@@ -35,6 +35,16 @@ class Invoice(models.Model):
     def __str__(self):
         return f"Invoice_Number {self.invoice_no}"
 
+    @property
+    def invoiceitems(self):
+        return InvoiceItem.objects.filter(invoice = self.id)
+
+    
+    @property
+    def payments(self):
+        return Payment.objects.filter(invoice = self.id)
+
+
     def save(self, *args, **kwargs):
         # if self.pk == None:
         #     self.Invoice_no = 1
@@ -68,9 +78,11 @@ class Invoice(models.Model):
             self.payment_status = "Underpaid"
         else:
             self.payment_status = 'Overpaid'
-
         super(Invoice, self).save(*args, **kwargs)
+    
 
+        class Meta:
+            ordering = ('-invoice_no',)
     
 
 class Item(models.Model):
